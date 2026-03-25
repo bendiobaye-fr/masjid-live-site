@@ -115,22 +115,28 @@ export default function App() {
                 marginTop: "28px",
               }}
             >
-              <button
-                onClick={toggleAudio}
-                style={{
-                  background: "#dc2626",
-                  color: "white",
-                  border: "none",
-                  padding: "16px 24px",
-                  borderRadius: "18px",
-                  fontSize: "1rem",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  boxShadow: "0 10px 30px rgba(127,29,29,0.35)",
-                }}
-              >
-                {isPlaying ? "⏸ Arrêter le live" : "🔴 Live Mosquée SAHABA"}
-              </button>
+              <a
+  href="http://212.227.105.255/listen/sahabamasjidlive/radio.mp3"
+  target="_blank"
+  rel="noreferrer"
+  style={{
+    background: "#dc2626",
+    color: "white",
+    border: "none",
+    padding: "16px 24px",
+    borderRadius: "18px",
+    fontSize: "1rem",
+    fontWeight: 700,
+    cursor: "pointer",
+    boxShadow: "0 10px 30px rgba(127,29,29,0.35)",
+    textDecoration: "none",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  🔴 Live Mosquée SAHABA
+</a>
 
               <a
                 href="#programme"
