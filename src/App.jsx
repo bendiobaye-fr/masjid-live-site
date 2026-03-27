@@ -1,7 +1,34 @@
-
+import { useRef, useState } from "react";
 
 export default function App() {
-  const audioUrl = "https://radio.masdjidlive.com/listen/sahaba/radio.mp3";    
+  const audioUrl = "https://radio.masdjidlive.com/listen/sahaba/radio.mp3";
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [status, setStatus] = useState("");
+
+  const toggleAudio = async () => {
+    const audio = audioRef.current;
+    if (!audio) {
+      setStatus("Lecteur audio introuvable.");
+      return;
+    }
+
+    try {
+      if (audio.paused) {
+        setStatus("Connexion au direct...");
+        await audio.play();
+        setIsPlaying(true);
+        setStatus("Live en cours.");
+      } else {
+        audio.pause();
+        setIsPlaying(false);
+        setStatus("Live arrêté.");
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("Impossible de lancer le live.");
+    }
+  };
 
   return (
     <div
@@ -101,28 +128,26 @@ export default function App() {
                 marginTop: "28px",
               }}
             >
-              <a
-  href={audioUrl}
-  target="_blank"
-  rel="noreferrer"
-  style={{
-    background: "#dc2626",
-    color: "white",
-    border: "none",
-    padding: "16px 24px",
-    borderRadius: "18px",
-    fontSize: "1rem",
-    fontWeight: 700,
-    cursor: "pointer",
-    boxShadow: "0 10px 30px rgba(127,29,29,0.35)",
-    textDecoration: "none",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }}
->
-  🔴 Live Mosquée SAHABA
-</a>
+              <button
+                onClick={toggleAudio}
+                type="button"
+                style={{
+                  background: "#dc2626",
+                  color: "white",
+                  border: "none",
+                  padding: "16px 24px",
+                  borderRadius: "18px",
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  boxShadow: "0 10px 30px rgba(127,29,29,0.35)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {isPlaying ? "⏸️ Stop Live" : "🔴 Live Mosquée SAHABA"}
+              </button>
 
               <a
                 href="#programme"
@@ -141,6 +166,10 @@ export default function App() {
                 Voir le programme
               </a>
             </div>
+
+            <p style={{ marginTop: "14px", color: "#d1fae5", minHeight: "24px" }}>
+              {status}
+            </p>
           </div>
 
           <div
@@ -206,9 +235,26 @@ export default function App() {
                 padding: "16px",
               }}
             >
-              <audio id="radioPlayer" controls style={{ width: "100%" }}>
-  <source src={audioUrl} type="audio/mpeg" />
-</audio>
+              <audio
+                ref={audioRef}
+                controls
+                preload="none"
+                onPlay={() => {
+                  setIsPlaying(true);
+                  setStatus("Live en cours.");
+                }}
+                onPause={() => {
+                  setIsPlaying(false);
+                  setStatus("Live arrêté.");
+                }}
+                onError={() => {
+                  setIsPlaying(false);
+                  setStatus("Erreur de lecture audio.");
+                }}
+                style={{ width: "100%" }}
+              >
+                <source src={audioUrl} type="audio/mpeg" />
+              </audio>
             </div>
 
             <div
