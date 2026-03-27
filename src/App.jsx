@@ -1,21 +1,7 @@
-import { useState } from "react";
+
 
 export default function App() {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const audioUrl = "http://212.227.105.255/listen/sahabamasjidlive/radio.mp3";
-
-  const toggleAudio = () => {
-    const audio = document.getElementById("radioPlayer");
-    if (!audio) return;
-
-    if (!isPlaying) {
-      audio.play();
-    } else {
-      audio.pause();
-    }
-    setIsPlaying(!isPlaying);
-  };
+  const audioUrl = "https://radio.masdjidlive.com/listen/sahaba/radio.mp3";    
 
   return (
     <div
@@ -116,7 +102,7 @@ export default function App() {
               }}
             >
               <a
-  href="http://212.227.105.255/listen/sahabamasjidlive/radio.mp3"
+  href={audioUrl}
   target="_blank"
   rel="noreferrer"
   style={{
@@ -221,9 +207,8 @@ export default function App() {
               }}
             >
               <audio id="radioPlayer" controls style={{ width: "100%" }}>
-                <source src={audioUrl} type="audio/mpeg" />
-                Votre navigateur ne prend pas en charge la lecture audio.
-              </audio>
+  <source src={audioUrl} type="audio/mpeg" />
+</audio>
             </div>
 
             <div
