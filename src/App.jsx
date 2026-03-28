@@ -1,6 +1,16 @@
 import { useRef, useState } from "react";
 
 export default function App() {
+  const hostname = window.location.hostname;
+
+  if (hostname === "sahaba.masdjidlive.com") {
+    return <SahabaPage />;
+  }
+
+  return <PlatformPage />;
+}
+
+function SahabaPage() {
   const audioUrl = "https://radio.masdjidlive.com/listen/sahaba/radio.mp3";
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -35,7 +45,8 @@ export default function App() {
       style={{
         minHeight: "100vh",
         margin: 0,
-        background: "linear-gradient(180deg, #0b3d2e 0%, #0f6b4f 55%, #f7f4ea 100%)",
+        background:
+          "linear-gradient(180deg, #0b3d2e 0%, #0f6b4f 55%, #f7f4ea 100%)",
         color: "white",
         fontFamily: "Arial, sans-serif",
         display: "flex",
@@ -167,7 +178,13 @@ export default function App() {
               </a>
             </div>
 
-            <p style={{ marginTop: "14px", color: "#d1fae5", minHeight: "24px" }}>
+            <p
+              style={{
+                marginTop: "14px",
+                color: "#d1fae5",
+                minHeight: "24px",
+              }}
+            >
               {status}
             </p>
           </div>
@@ -438,6 +455,137 @@ export default function App() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PlatformPage() {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        margin: 0,
+        background:
+          "linear-gradient(180deg, #0b3d2e 0%, #0f6b4f 55%, #f7f4ea 100%)",
+        color: "white",
+        fontFamily: "Arial, sans-serif",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "1100px",
+          width: "100%",
+          margin: "0 auto",
+          padding: "40px 20px 60px",
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "10px",
+            background: "rgba(255,255,255,0.12)",
+            border: "1px solid rgba(255,255,255,0.2)",
+            padding: "10px 16px",
+            borderRadius: "999px",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <span
+            style={{
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              background: "#ef4444",
+              display: "inline-block",
+            }}
+          />
+          Plateforme radio des mosquées
+        </div>
+
+        <div style={{ marginTop: "30px" }}>
+          <p
+            style={{
+              color: "#d1fae5",
+              letterSpacing: "0.25em",
+              textTransform: "uppercase",
+              fontSize: "14px",
+              marginBottom: "10px",
+            }}
+          >
+            Masjid Live
+          </p>
+
+          <h1
+            style={{
+              fontSize: "clamp(2.2rem, 5vw, 4rem)",
+              lineHeight: 1.1,
+              margin: "0 0 18px",
+            }}
+          >
+            La plateforme des{" "}
+            <span style={{ color: "#facc15" }}>mosquées en direct</span>
+          </h1>
+
+          <p
+            style={{
+              fontSize: "1.1rem",
+              lineHeight: 1.8,
+              color: "rgba(255,255,255,0.92)",
+              maxWidth: "700px",
+            }}
+          >
+            Écoutez les prières, khutbas et rappels de plusieurs mosquées depuis
+            une seule plateforme.
+          </p>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "20px",
+            marginTop: "40px",
+          }}
+        >
+          <a
+            href="https://sahaba.masdjidlive.com"
+            style={{
+              textDecoration: "none",
+              color: "white",
+              background: "rgba(255,255,255,0.12)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              borderRadius: "24px",
+              padding: "24px",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
+            }}
+          >
+            <h2 style={{ marginTop: 0 }}>Mosquée Sahaba</h2>
+            <p style={{ lineHeight: 1.7 }}>
+              Accéder à la page dédiée de la mosquée Sahaba et écouter le
+              direct.
+            </p>
+            <div
+              style={{
+                marginTop: "16px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#dc2626",
+                color: "white",
+                padding: "12px 18px",
+                borderRadius: "14px",
+                fontWeight: 700,
+              }}
+            >
+              Ouvrir Sahaba
+            </div>
+          </a>
         </div>
       </div>
     </div>
