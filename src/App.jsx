@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 export default function App() {
   const hostname = window.location.hostname;
 
-  if (hostname === "sahaba.masdjidlive.com") {
+  if (hostname.includes("sahaba")) {
     return <SahabaPage />;
   }
 
