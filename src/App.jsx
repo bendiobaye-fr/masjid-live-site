@@ -5,10 +5,53 @@ import L from "leaflet";
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
+
+const MOSQUES = [
+  {
+    name: "Mosquée Sahaba",
+    city: "Créteil",
+    url: "https://sahaba.masdjidlive.com",
+    description: "Prières, khutbas et rappels en direct.",
+    lat: 48.7904,
+    lng: 2.4556,
+  },
+  {
+    name: "Mosquée Touba",
+    city: "Paris",
+    url: "https://touba.masdjidlive.com",
+    description: "Station à venir.",
+    lat: 48.8566,
+    lng: 2.3522,
+  },
+  {
+    name: "Mosquée Médina",
+    city: "Lyon",
+    url: "https://medina.masdjidlive.com",
+    description: "Station à venir.",
+    lat: 45.764,
+    lng: 4.8357,
+  },
+  {
+    name: "Mosquée Ali Hacene-Blidi",
+    city: "Marseille",
+    url: "https://alihaceneblidi.masdjidlive.com",
+    description: "Station à venir.",
+    lat: 43.2965,
+    lng: 5.3698,
+  },
+];
+
+function normalizeText(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
 
 export default function App() {
   const hostname = window.location.hostname;
@@ -470,80 +513,48 @@ function SahabaPage() {
     </div>
   );
 }
+
 function normalizeText(text) {
   return text
     .toLowerCase()
-    .normalize("NFD") // sépare les lettres et les accents
-    .replace(/[\u0300-\u036f]/g, ""); // supprime les accents
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
+
 function PlatformPage() {
   const [searchCity, setSearchCity] = useState("");
-const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const mosques = [
-    {
-      name: "Mosquée Sahaba",
-      city: "Créteil",
-      url: "https://sahaba.masdjidlive.com",
-      description: "Prières, khutbas et rappels en direct.",
-      lat: 48.7904,
-      lng: 2.4556,
-    },
-    {
-      name: "Mosquée Touba",
-      city: "Paris",
-      url: "https://touba.masdjidlive.com",
-      description: "Station à venir.",
-      lat: 48.8566,
-      lng: 2.3522,
-    },
-    {
-      name: "Mosquée Médina",
-      city: "Lyon",
-      url: "https://medina.masdjidlive.com",
-      description: "Station à venir.",
-      lat: 45.764,
-      lng: 4.8357,
-    },
-    {
-      name: "Mosquée Ali Hacene-Blidi",
-      city: "Marseille",
-      url: "https://alihaceneblidi.masdjidlive.com",
-      description: "Station à venir.",
-      lat: 43.2965,
-      lng: 5.3698,
-    },
-  ];
-const suggestions = useMemo(() => {
-  const values = [];
-
-  mosques.forEach((mosque) => {
-    values.push(mosque.city);
-    values.push(mosque.name);
-  });
-
-  const uniqueValues = [...new Set(values)];
-
-  const query = normalizeText(searchCity.trim());
-
-  if (!query) return uniqueValues;
-
-  return uniqueValues.filter((value) =>
-    normalizeText(value).includes(query)
-  );
-}, [searchCity]);
   const filteredMosques = useMemo(() => {
-  const query = normalizeText(searchCity.trim());
+    const query = normalizeText(searchCity.trim());
 
-  if (!query) return mosques;
+    if (!query) return MOSQUES;
 
-  return mosques.filter((mosque) => {
-    const city = normalizeText(mosque.city);
-    const name = normalizeText(mosque.name);
+    return MOSQUES.filter((mosque) => {
+      const city = normalizeText(mosque.city);
+      const name = normalizeText(mosque.name);
 
-    return city.includes(query) || name.includes(query);
-  });
-}, [searchCity]);
+      return city.includes(query) || name.includes(query);
+    });
+  }, [searchCity]);
+
+  const suggestions = useMemo(() => {
+    const values = [];
+
+    MOSQUES.forEach((mosque) => {
+      values.push(mosque.city);
+      values.push(mosque.name);
+    });
+
+    const uniqueValues = [...new Set(values)];
+    const query = normalizeText(searchCity.trim());
+
+    if (!query) return uniqueValues;
+
+    return uniqueValues.filter((value) =>
+      normalizeText(value).includes(query)
+    );
+  }, [searchCity]);
 
   return (
     <div
@@ -622,7 +633,8 @@ const suggestions = useMemo(() => {
               maxWidth: "700px",
             }}
           >
-            Recherchez une mosquée par ville ou par nom, puis accédez directement à sa radio en direct.
+            Recherchez une mosquée par ville ou par nom, puis accédez
+            directement à sa radio en direct.
           </p>
         </div>
 
@@ -649,80 +661,80 @@ const suggestions = useMemo(() => {
               alignItems: "center",
             }}
           >
-            <<div
-  style={{
-    position: "relative",
-    flex: "1 1 280px",
-  }}
->
-  <input
-    type="text"
-    placeholder="Exemple : Créteil ou Sahaba"
-    value={searchCity}
-    onChange={(e) => {
-      setSearchCity(e.target.value);
-      setShowSuggestions(true);
-    }}
-    onFocus={() => setShowSuggestions(true)}
-    style={{
-      width: "100%",
-      padding: "14px 16px",
-      borderRadius: "16px",
-      border: "1px solid rgba(255,255,255,0.18)",
-      background: "rgba(255,255,255,0.96)",
-      color: "#0f172a",
-      fontSize: "1rem",
-      outline: "none",
-      boxSizing: "border-box",
-    }}
-  />
+            <div
+              style={{
+                position: "relative",
+                flex: "1 1 280px",
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Exemple : Créteil ou Sahaba"
+                value={searchCity}
+                onChange={(e) => {
+                  setSearchCity(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                style={{
+                  width: "100%",
+                  padding: "14px 16px",
+                  borderRadius: "16px",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  background: "rgba(255,255,255,0.96)",
+                  color: "#0f172a",
+                  fontSize: "1rem",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
 
-  {showSuggestions && searchCity.trim() && suggestions.length > 0 && (
-    <div
-      style={{
-        position: "absolute",
-        top: "calc(100% + 8px)",
-        left: 0,
-        right: 0,
-        background: "white",
-        color: "#0f172a",
-        borderRadius: "16px",
-        overflow: "hidden",
-        boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
-        zIndex: 20,
-      }}
-    >
-      {suggestions.map((suggestion) => (
-        <button
-          key={suggestion}
-          type="button"
-          onClick={() => {
-            setSearchCity(suggestion);
-            setShowSuggestions(false);
-          }}
-          style={{
-            width: "100%",
-            textAlign: "left",
-            padding: "12px 16px",
-            border: "none",
-            background: "white",
-            cursor: "pointer",
-            fontSize: "0.98rem",
-          }}
-        >
-          {suggestion}
-        </button>
-      ))}
-    </div>
-  )}
-</div>
+              {showSuggestions && searchCity.trim() && suggestions.length > 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    left: 0,
+                    right: 0,
+                    background: "white",
+                    color: "#0f172a",
+                    borderRadius: "16px",
+                    overflow: "hidden",
+                    boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
+                    zIndex: 20,
+                  }}
+                >
+                  {suggestions.map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      onClick={() => {
+                        setSearchCity(suggestion);
+                        setShowSuggestions(false);
+                      }}
+                      style={{
+                        width: "100%",
+                        textAlign: "left",
+                        padding: "12px 16px",
+                        border: "none",
+                        background: "white",
+                        cursor: "pointer",
+                        fontSize: "0.98rem",
+                      }}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <button
               type="button"
               onClick={() => {
-  setSearchCity("");
-  setShowSuggestions(false);
-}}
+                setSearchCity("");
+                setShowSuggestions(false);
+              }}
               style={{
                 background: "#dc2626",
                 color: "white",
