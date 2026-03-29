@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 export default function App() {
   const hostname = window.location.hostname;
@@ -462,6 +462,39 @@ function SahabaPage() {
 }
 
 function PlatformPage() {
+  const [searchCity, setSearchCity] = useState("");
+
+  const mosques = [
+    {
+      name: "Mosquée Sahaba",
+      city: "Créteil",
+      url: "https://sahaba.masdjidlive.com",
+      description: "Prières, khutbas et rappels en direct.",
+    },
+    {
+      name: "Mosquée Touba",
+      city: "Paris",
+      url: "https://touba.masdjidlive.com",
+      description: "Station à venir.",
+    },
+    {
+      name: "Mosquée Médina",
+      city: "Lyon",
+      url: "https://medina.masdjidlive.com",
+      description: "Station à venir.",
+    },
+  ];
+
+  const filteredMosques = useMemo(() => {
+    const query = searchCity.trim().toLowerCase();
+
+    if (!query) return mosques;
+
+    return mosques.filter((mosque) =>
+      mosque.city.toLowerCase().includes(query)
+    );
+  }, [searchCity]);
+
   return (
     <div
       style={{
@@ -528,8 +561,7 @@ function PlatformPage() {
               margin: "0 0 18px",
             }}
           >
-            La plateforme des{" "}
-            <span style={{ color: "#facc15" }}>mosquées en direct</span>
+            Trouvez une <span style={{ color: "#facc15" }}>mosquée en direct</span>
           </h1>
 
           <p
@@ -540,8 +572,75 @@ function PlatformPage() {
               maxWidth: "700px",
             }}
           >
-            Écoutez les prières, khutbas et rappels de plusieurs mosquées depuis
-            une seule plateforme.
+            Recherchez une mosquée par ville et accédez directement à sa radio en direct.
+          </p>
+        </div>
+
+        <div
+          style={{
+            marginTop: "32px",
+            background: "rgba(255,255,255,0.12)",
+            border: "1px solid rgba(255,255,255,0.18)",
+            borderRadius: "24px",
+            padding: "24px",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
+            Rechercher par ville
+          </h2>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "12px",
+              alignItems: "center",
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Exemple : Créteil"
+              value={searchCity}
+              onChange={(e) => setSearchCity(e.target.value)}
+              style={{
+                flex: "1 1 280px",
+                padding: "14px 16px",
+                borderRadius: "16px",
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "rgba(255,255,255,0.96)",
+                color: "#0f172a",
+                fontSize: "1rem",
+                outline: "none",
+              }}
+            />
+
+            <button
+              type="button"
+              onClick={() => setSearchCity("")}
+              style={{
+                background: "#dc2626",
+                color: "white",
+                border: "none",
+                padding: "14px 18px",
+                borderRadius: "16px",
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Réinitialiser
+            </button>
+          </div>
+
+          <p
+            style={{
+              marginTop: "14px",
+              marginBottom: 0,
+              color: "#d1fae5",
+            }}
+          >
+            {filteredMosques.length} résultat(s) trouvé(s)
           </p>
         </div>
 
@@ -550,43 +649,75 @@ function PlatformPage() {
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
             gap: "20px",
-            marginTop: "40px",
+            marginTop: "30px",
           }}
         >
-          <a
-            href="https://sahaba.masdjidlive.com"
+          {filteredMosques.map((mosque) => (
+            <a
+              key={`${mosque.name}-${mosque.city}`}
+              href={mosque.url}
+              style={{
+                textDecoration: "none",
+                color: "white",
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                borderRadius: "24px",
+                padding: "24px",
+                boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
+              }}
+            >
+              <p
+                style={{
+                  marginTop: 0,
+                  marginBottom: "8px",
+                  color: "#d1fae5",
+                  fontSize: "14px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                {mosque.city}
+              </p>
+
+              <h2 style={{ marginTop: 0 }}>{mosque.name}</h2>
+
+              <p style={{ lineHeight: 1.7 }}>{mosque.description}</p>
+
+              <div
+                style={{
+                  marginTop: "16px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "#dc2626",
+                  color: "white",
+                  padding: "12px 18px",
+                  borderRadius: "14px",
+                  fontWeight: 700,
+                }}
+              >
+                Ouvrir la page
+              </div>
+            </a>
+          ))}
+        </div>
+
+        {filteredMosques.length === 0 && (
+          <div
             style={{
-              textDecoration: "none",
-              color: "white",
+              marginTop: "24px",
               background: "rgba(255,255,255,0.12)",
               border: "1px solid rgba(255,255,255,0.18)",
               borderRadius: "24px",
               padding: "24px",
-              boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
             }}
           >
-            <h2 style={{ marginTop: 0 }}>Mosquée Sahaba</h2>
-            <p style={{ lineHeight: 1.7 }}>
-              Accéder à la page dédiée de la mosquée Sahaba et écouter le
-              direct.
+            <h3 style={{ marginTop: 0 }}>Aucun résultat</h3>
+            <p style={{ marginBottom: 0 }}>
+              Aucune mosquée ne correspond à cette ville pour le moment.
             </p>
-            <div
-              style={{
-                marginTop: "16px",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#dc2626",
-                color: "white",
-                padding: "12px 18px",
-                borderRadius: "14px",
-                fontWeight: 700,
-              }}
-            >
-              Ouvrir Sahaba
-            </div>
-          </a>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
