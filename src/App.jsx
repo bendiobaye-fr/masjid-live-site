@@ -591,24 +591,9 @@ function PlatformPage() {
           </p>
         </div>
 
-        <div
-          style={{
-            marginTop: "32px",
-            background: "rgba(255,255,255,0.12)",
-            border: "1px solid rgba(255,255,255,0.18)",
-            borderRadius: "24px",
-            padding: "24px",
-            boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
-            backdropFilter: "blur(10px)",
-          }}
-        >
-          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
-            Rechercher par ville
-          </h2>
-         </div>
 <div
   style={{
-    marginTop: "30px",
+    marginTop: "32px",
     background: "rgba(255,255,255,0.12)",
     border: "1px solid rgba(255,255,255,0.18)",
     borderRadius: "24px",
@@ -618,112 +603,61 @@ function PlatformPage() {
   }}
 >
   <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
-    Carte interactive des mosquées
+    Rechercher par ville
   </h2>
-
-  <p style={{ color: "#d1fae5", marginTop: 0, marginBottom: "18px" }}>
-    Cliquez sur un marqueur pour accéder à la page dédiée de la mosquée.
-  </p>
 
   <div
     style={{
-      overflow: "hidden",
-      borderRadius: "20px",
-      border: "1px solid rgba(255,255,255,0.18)",
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "12px",
+      alignItems: "center",
     }}
   >
-    <MapContainer
-      center={[46.6034, 1.8883]}
-      zoom={6}
-      scrollWheelZoom={true}
-      style={{ height: "480px", width: "100%" }}
+    <input
+      type="text"
+      placeholder="Exemple : Créteil"
+      value={searchCity}
+      onChange={(e) => setSearchCity(e.target.value)}
+      style={{
+        flex: "1 1 280px",
+        padding: "14px 16px",
+        borderRadius: "16px",
+        border: "1px solid rgba(255,255,255,0.18)",
+        background: "rgba(255,255,255,0.96)",
+        color: "#0f172a",
+        fontSize: "1rem",
+        outline: "none",
+      }}
+    />
+
+    <button
+      type="button"
+      onClick={() => setSearchCity("")}
+      style={{
+        background: "#dc2626",
+        color: "white",
+        border: "none",
+        padding: "14px 18px",
+        borderRadius: "16px",
+        fontWeight: 700,
+        cursor: "pointer",
+      }}
     >
-      <TileLayer
-        attribution='&copy; OpenStreetMap contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-
-      {filteredMosques.map((mosque) => (
-        <Marker key={`${mosque.name}-${mosque.city}`} position={[mosque.lat, mosque.lng]}>
-          <Popup>
-            <div style={{ minWidth: "180px" }}>
-              <strong>{mosque.name}</strong>
-              <br />
-              {mosque.city}
-              <br />
-              <span>{mosque.description}</span>
-              <br />
-              <br />
-              <a
-                href={mosque.url}
-                style={{
-                  color: "#0f766e",
-                  fontWeight: 700,
-                  textDecoration: "none",
-                }}
-              >
-                Ouvrir la page
-              </a>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+      Réinitialiser
+    </button>
   </div>
+
+  <p
+    style={{
+      marginTop: "14px",
+      marginBottom: 0,
+      color: "#d1fae5",
+    }}
+  >
+    {filteredMosques.length} résultat(s) trouvé(s)
+  </p>
 </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "12px",
-              alignItems: "center",
-            }}
-          >
-            <input
-              type="text"
-              placeholder="Exemple : Créteil"
-              value={searchCity}
-              onChange={(e) => setSearchCity(e.target.value)}
-              style={{
-                flex: "1 1 280px",
-                padding: "14px 16px",
-                borderRadius: "16px",
-                border: "1px solid rgba(255,255,255,0.18)",
-                background: "rgba(255,255,255,0.96)",
-                color: "#0f172a",
-                fontSize: "1rem",
-                outline: "none",
-              }}
-            />
-
-            <button
-              type="button"
-              onClick={() => setSearchCity("")}
-              style={{
-                background: "#dc2626",
-                color: "white",
-                border: "none",
-                padding: "14px 18px",
-                borderRadius: "16px",
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              Réinitialiser
-            </button>
-          </div>
-
-          <p
-            style={{
-              marginTop: "14px",
-              marginBottom: 0,
-              color: "#d1fae5",
-            }}
-          >
-            {filteredMosques.length} résultat(s) trouvé(s)
-          </p>
-        </div>
-
         <div
           style={{
             display: "grid",
