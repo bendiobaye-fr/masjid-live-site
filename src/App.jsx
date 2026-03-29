@@ -1,4 +1,14 @@
 import { useMemo, useRef, useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import L from "leaflet";
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
 export default function App() {
   const hostname = window.location.hostname;
@@ -465,26 +475,31 @@ function PlatformPage() {
   const [searchCity, setSearchCity] = useState("");
 
   const mosques = [
-    {
-      name: "Mosquée Sahaba",
-      city: "Créteil",
-      url: "https://sahaba.masdjidlive.com",
-      description: "Prières, khutbas et rappels en direct.",
-    },
-    {
-      name: "Mosquée Touba",
-      city: "Paris",
-      url: "https://touba.masdjidlive.com",
-      description: "Station à venir.",
-    },
-    {
-      name: "Mosquée Médina",
-      city: "Lyon",
-      url: "https://medina.masdjidlive.com",
-      description: "Station à venir.",
-    },
-  ];
-
+  {
+    name: "Mosquée Sahaba",
+    city: "Créteil",
+    url: "https://sahaba.masdjidlive.com",
+    description: "Prières, khutbas et rappels en direct.",
+    lat: 48.7904,
+    lng: 2.4556,
+  },
+  {
+    name: "Mosquée Touba",
+    city: "Paris",
+    url: "https://touba.masdjidlive.com",
+    description: "Station à venir.",
+    lat: 48.8566,
+    lng: 2.3522,
+  },
+  {
+    name: "Mosquée Médina",
+    city: "Lyon",
+    url: "https://medina.masdjidlive.com",
+    description: "Station à venir.",
+    lat: 45.764,
+    lng: 4.8357,
+  },
+];
   const filteredMosques = useMemo(() => {
     const query = searchCity.trim().toLowerCase();
 
@@ -590,7 +605,72 @@ function PlatformPage() {
           <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
             Rechercher par ville
           </h2>
+         </div>
+<div
+  style={{
+    marginTop: "30px",
+    background: "rgba(255,255,255,0.12)",
+    border: "1px solid rgba(255,255,255,0.18)",
+    borderRadius: "24px",
+    padding: "24px",
+    boxShadow: "0 20px 50px rgba(0,0,0,0.18)",
+    backdropFilter: "blur(10px)",
+  }}
+>
+  <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
+    Carte interactive des mosquées
+  </h2>
 
+  <p style={{ color: "#d1fae5", marginTop: 0, marginBottom: "18px" }}>
+    Cliquez sur un marqueur pour accéder à la page dédiée de la mosquée.
+  </p>
+
+  <div
+    style={{
+      overflow: "hidden",
+      borderRadius: "20px",
+      border: "1px solid rgba(255,255,255,0.18)",
+    }}
+  >
+    <MapContainer
+      center={[46.6034, 1.8883]}
+      zoom={6}
+      scrollWheelZoom={true}
+      style={{ height: "480px", width: "100%" }}
+    >
+      <TileLayer
+        attribution='&copy; OpenStreetMap contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      {filteredMosques.map((mosque) => (
+        <Marker key={`${mosque.name}-${mosque.city}`} position={[mosque.lat, mosque.lng]}>
+          <Popup>
+            <div style={{ minWidth: "180px" }}>
+              <strong>{mosque.name}</strong>
+              <br />
+              {mosque.city}
+              <br />
+              <span>{mosque.description}</span>
+              <br />
+              <br />
+              <a
+                href={mosque.url}
+                style={{
+                  color: "#0f766e",
+                  fontWeight: 700,
+                  textDecoration: "none",
+                }}
+              >
+                Ouvrir la page
+              </a>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
+    </MapContainer>
+  </div>
+</div>
           <div
             style={{
               display: "flex",
