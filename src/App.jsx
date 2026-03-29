@@ -470,7 +470,12 @@ function SahabaPage() {
     </div>
   );
 }
-
+function normalizeText(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD") // sépare les lettres et les accents
+    .replace(/[\u0300-\u036f]/g, ""); // supprime les accents
+}
 function PlatformPage() {
   const [searchCity, setSearchCity] = useState("");
 
@@ -510,16 +515,17 @@ function PlatformPage() {
   ];
 
   const filteredMosques = useMemo(() => {
-    const query = searchCity.trim().toLowerCase();
+  const query = normalizeText(searchCity.trim());
 
-    if (!query) return mosques;
+  if (!query) return mosques;
 
-    return mosques.filter((mosque) => {
-      const cityMatch = mosque.city.toLowerCase().includes(query);
-      const nameMatch = mosque.name.toLowerCase().includes(query);
-      return cityMatch || nameMatch;
-    });
-  }, [searchCity]);
+  return mosques.filter((mosque) => {
+    const city = normalizeText(mosque.city);
+    const name = normalizeText(mosque.name);
+
+    return city.includes(query) || name.includes(query);
+  });
+}, [searchCity]);
 
   return (
     <div
