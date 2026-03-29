@@ -478,6 +478,7 @@ function normalizeText(text) {
 }
 function PlatformPage() {
   const [searchCity, setSearchCity] = useState("");
+const [showSuggestions, setShowSuggestions] = useState(false);
 
   const mosques = [
     {
@@ -513,7 +514,24 @@ function PlatformPage() {
       lng: 5.3698,
     },
   ];
+const suggestions = useMemo(() => {
+  const values = [];
 
+  mosques.forEach((mosque) => {
+    values.push(mosque.city);
+    values.push(mosque.name);
+  });
+
+  const uniqueValues = [...new Set(values)];
+
+  const query = normalizeText(searchCity.trim());
+
+  if (!query) return uniqueValues;
+
+  return uniqueValues.filter((value) =>
+    normalizeText(value).includes(query)
+  );
+}, [searchCity]);
   const filteredMosques = useMemo(() => {
   const query = normalizeText(searchCity.trim());
 
@@ -631,26 +649,80 @@ function PlatformPage() {
               alignItems: "center",
             }}
           >
-            <input
-              type="text"
-              placeholder="Exemple : Créteil ou Sahaba"
-              value={searchCity}
-              onChange={(e) => setSearchCity(e.target.value)}
-              style={{
-                flex: "1 1 280px",
-                padding: "14px 16px",
-                borderRadius: "16px",
-                border: "1px solid rgba(255,255,255,0.18)",
-                background: "rgba(255,255,255,0.96)",
-                color: "#0f172a",
-                fontSize: "1rem",
-                outline: "none",
-              }}
-            />
+            <<div
+  style={{
+    position: "relative",
+    flex: "1 1 280px",
+  }}
+>
+  <input
+    type="text"
+    placeholder="Exemple : Créteil ou Sahaba"
+    value={searchCity}
+    onChange={(e) => {
+      setSearchCity(e.target.value);
+      setShowSuggestions(true);
+    }}
+    onFocus={() => setShowSuggestions(true)}
+    style={{
+      width: "100%",
+      padding: "14px 16px",
+      borderRadius: "16px",
+      border: "1px solid rgba(255,255,255,0.18)",
+      background: "rgba(255,255,255,0.96)",
+      color: "#0f172a",
+      fontSize: "1rem",
+      outline: "none",
+      boxSizing: "border-box",
+    }}
+  />
+
+  {showSuggestions && searchCity.trim() && suggestions.length > 0 && (
+    <div
+      style={{
+        position: "absolute",
+        top: "calc(100% + 8px)",
+        left: 0,
+        right: 0,
+        background: "white",
+        color: "#0f172a",
+        borderRadius: "16px",
+        overflow: "hidden",
+        boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
+        zIndex: 20,
+      }}
+    >
+      {suggestions.map((suggestion) => (
+        <button
+          key={suggestion}
+          type="button"
+          onClick={() => {
+            setSearchCity(suggestion);
+            setShowSuggestions(false);
+          }}
+          style={{
+            width: "100%",
+            textAlign: "left",
+            padding: "12px 16px",
+            border: "none",
+            background: "white",
+            cursor: "pointer",
+            fontSize: "0.98rem",
+          }}
+        >
+          {suggestion}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
 
             <button
               type="button"
-              onClick={() => setSearchCity("")}
+              onClick={() => {
+  setSearchCity("");
+  setShowSuggestions(false);
+}}
               style={{
                 background: "#dc2626",
                 color: "white",
