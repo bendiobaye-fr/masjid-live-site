@@ -500,9 +500,9 @@ function PlatformPage() {
       lng: 4.8357,
     },
     {
-      name: "Mosquée Sahaba",
+      name: "Mosquée Ali Hacene-Blidi",
       city: "Marseille",
-      url: "https://sahaba-marseille.masdjidlive.com",
+      url: "https://alihaceneblidi.masdjidlive.com",
       description: "Station à venir.",
       lat: 43.2965,
       lng: 5.3698,
