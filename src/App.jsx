@@ -46,6 +46,59 @@ const MOSQUES = [
   },
 ];
 
+const translations = {
+  fr: {
+    badge: "Plateforme radio des mosquées",
+    brand: "Masjid Live",
+    heroTitle: "Trouvez une mosquée en direct",
+    heroSubtitle:
+      "Recherchez une mosquée par ville ou par nom, puis accédez directement à sa radio en direct.",
+    searchLabel: "Rechercher par ville ou par nom de mosquée",
+    searchPlaceholder: "Exemple : Créteil ou Sahaba",
+    reset: "Réinitialiser",
+    openPage: "Ouvrir la page",
+    resultsSuffix: "résultat(s) trouvé(s)",
+    mapTitle: "Carte interactive des mosquées",
+    mapSubtitle:
+      "Cliquez sur un marqueur pour accéder à la page dédiée de la mosquée.",
+    noResultTitle: "Aucun résultat",
+    noResultText:
+      "Aucune mosquée ne correspond à cette recherche pour le moment.",
+  },
+  en: {
+    badge: "Mosque radio platform",
+    brand: "Masjid Live",
+    heroTitle: "Find a mosque live",
+    heroSubtitle:
+      "Search for a mosque by city or name, then access its live radio directly.",
+    searchLabel: "Search by city or mosque name",
+    searchPlaceholder: "Example: Creteil or Sahaba",
+    reset: "Reset",
+    openPage: "Open page",
+    resultsSuffix: "result(s) found",
+    mapTitle: "Interactive mosque map",
+    mapSubtitle: "Click on a marker to open the mosque page.",
+    noResultTitle: "No result",
+    noResultText: "No mosque matches this search yet.",
+  },
+  ar: {
+    badge: "منصة إذاعات المساجد",
+    brand: "مسجد لايف",
+    heroTitle: "اعثر على مسجد مباشر",
+    heroSubtitle:
+      "ابحث عن مسجد حسب المدينة أو الاسم ثم ادخل مباشرة إلى البث الإذاعي المباشر.",
+    searchLabel: "ابحث حسب المدينة أو اسم المسجد",
+    searchPlaceholder: "مثال: كريتاي أو الصحابة",
+    reset: "إعادة التعيين",
+    openPage: "افتح الصفحة",
+    resultsSuffix: "نتيجة",
+    mapTitle: "خريطة المساجد التفاعلية",
+    mapSubtitle: "اضغط على العلامة لفتح الصفحة الخاصة بالمسجد.",
+    noResultTitle: "لا توجد نتائج",
+    noResultText: "لا يوجد مسجد يطابق هذا البحث حالياً.",
+  },
+};
+
 function normalizeText(text) {
   return text
     .toLowerCase()
@@ -161,7 +214,16 @@ function SahabaPage() {
               Masjid Live
             </p>
 
-            <h1>{t.heroTitle}</h1>
+            <h1
+              style={{
+                fontSize: "clamp(2.2rem, 5vw, 4rem)",
+                lineHeight: 1.1,
+                margin: "0 0 18px",
+              }}
+            >
+              Écoutez la{" "}
+              <span style={{ color: "#facc15" }}>mosquée Sahaba</span> en direct
+            </h1>
 
             <p
               style={{
@@ -504,43 +566,59 @@ function SahabaPage() {
     </div>
   );
 }
-const translations = {
-  fr: {
-    heroTitle: "Trouvez une mosquée en direct",
-    heroSubtitle:
-      "Recherchez une mosquée par ville ou par nom, puis accédez directement à sa radio en direct.",
-    searchLabel: "Rechercher par ville ou par nom de mosquée",
-    reset: "Réinitialiser",
-    openPage: "Ouvrir la page",
-    results: "résultat(s) trouvé(s)",
-  },
-  en: {
-    heroTitle: "Find a mosque live",
-    heroSubtitle:
-      "Search for a mosque by city or name, then access its live radio directly.",
-    searchLabel: "Search by city or mosque name",
-    reset: "Reset",
-    openPage: "Open page",
-    results: "result(s) found",
-  },
-  ar: {
-    heroTitle: "اعثر على مسجد مباشر",
-    heroSubtitle:
-      "ابحث عن مسجد حسب المدينة أو الاسم ثم ادخل مباشرة إلى البث الإذاعي المباشر.",
-    searchLabel: "ابحث حسب المدينة أو اسم المسجد",
-    reset: "إعادة التعيين",
-    openPage: "افتح الصفحة",
-    results: "نتيجة",
-  },
-};
 
+function LanguageSelector({ language, setLanguage }) {
+  const buttonStyle = (lang) => ({
+    background: language === lang ? "#dc2626" : "rgba(255,255,255,0.08)",
+    color: "white",
+    border: "1px solid rgba(255,255,255,0.25)",
+    padding: "10px 14px",
+    borderRadius: "14px",
+    fontWeight: 700,
+    cursor: "pointer",
+  });
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: "10px",
+        marginTop: "20px",
+        flexWrap: "wrap",
+      }}
+    >
+      <button
+        type="button"
+        onClick={() => setLanguage("fr")}
+        style={buttonStyle("fr")}
+      >
+        FR
+      </button>
+      <button
+        type="button"
+        onClick={() => setLanguage("en")}
+        style={buttonStyle("en")}
+      >
+        EN
+      </button>
+      <button
+        type="button"
+        onClick={() => setLanguage("ar")}
+        style={buttonStyle("ar")}
+      >
+        AR
+      </button>
+    </div>
+  );
+}
 
 function PlatformPage() {
   const [language, setLanguage] = useState("fr");
-  const t = translations[language];
-  
   const [searchCity, setSearchCity] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const t = translations[language];
+  const isArabic = language === "ar";
 
   const filteredMosques = useMemo(() => {
     const query = normalizeText(searchCity.trim());
@@ -550,7 +628,6 @@ function PlatformPage() {
     return MOSQUES.filter((mosque) => {
       const city = normalizeText(mosque.city);
       const name = normalizeText(mosque.name);
-
       return city.includes(query) || name.includes(query);
     });
   }, [searchCity]);
@@ -575,6 +652,7 @@ function PlatformPage() {
 
   return (
     <div
+      dir={isArabic ? "rtl" : "ltr"}
       style={{
         minHeight: "100vh",
         margin: 0,
@@ -584,6 +662,7 @@ function PlatformPage() {
         fontFamily: "Arial, sans-serif",
         display: "flex",
         flexDirection: "column",
+        textAlign: isArabic ? "right" : "left",
       }}
     >
       <div
@@ -616,8 +695,10 @@ function PlatformPage() {
               display: "inline-block",
             }}
           />
-          Plateforme radio des mosquées
+          {t.badge}
         </div>
+
+        <LanguageSelector language={language} setLanguage={setLanguage} />
 
         <div style={{ marginTop: "30px" }}>
           <p
@@ -629,10 +710,18 @@ function PlatformPage() {
               marginBottom: "10px",
             }}
           >
-            Masjid Live
+            {t.brand}
           </p>
 
-          <h1>{t.heroTitle}</h1>
+          <h1
+            style={{
+              fontSize: "clamp(2.2rem, 5vw, 4rem)",
+              lineHeight: 1.1,
+              margin: "0 0 18px",
+            }}
+          >
+            {t.heroTitle}
+          </h1>
 
           <p
             style={{
@@ -642,8 +731,7 @@ function PlatformPage() {
               maxWidth: "700px",
             }}
           >
-            Recherchez une mosquée par ville ou par nom, puis accédez
-            directement à sa radio en direct.
+            {t.heroSubtitle}
           </p>
         </div>
 
@@ -658,7 +746,9 @@ function PlatformPage() {
             backdropFilter: "blur(10px)",
           }}
         >
-          <h2>{t.searchLabel}</h2>
+          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
+            {t.searchLabel}
+          </h2>
 
           <div
             style={{
@@ -676,7 +766,7 @@ function PlatformPage() {
             >
               <input
                 type="text"
-                placeholder="Exemple : Créteil ou Sahaba"
+                placeholder={t.searchPlaceholder}
                 value={searchCity}
                 onChange={(e) => {
                   setSearchCity(e.target.value);
@@ -696,45 +786,46 @@ function PlatformPage() {
                 }}
               />
 
-              {showSuggestions && searchCity.trim() && suggestions.length > 0 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "calc(100% + 8px)",
-                    left: 0,
-                    right: 0,
-                    background: "white",
-                    color: "#0f172a",
-                    borderRadius: "16px",
-                    overflow: "hidden",
-                    boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
-                    zIndex: 20,
-                  }}
-                >
-                  {suggestions.map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      type="button"
-                      onClick={() => {
-                        setSearchCity(suggestion);
-                        setShowSuggestions(false);
-                      }}
-                      style={{
-                        width: "100%",
-                        textAlign: "left",
-                        padding: "12px 16px",
-                        border: "none",
-                        background: "white",
-                        cursor: "pointer",
-                        fontSize: "0.98rem",
-                      }}
-                    >
-                      {suggestion}
-                      {t.reset}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {showSuggestions &&
+                searchCity.trim() &&
+                suggestions.length > 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 8px)",
+                      left: 0,
+                      right: 0,
+                      background: "white",
+                      color: "#0f172a",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
+                      zIndex: 20,
+                    }}
+                  >
+                    {suggestions.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          setSearchCity(suggestion);
+                          setShowSuggestions(false);
+                        }}
+                        style={{
+                          width: "100%",
+                          textAlign: isArabic ? "right" : "left",
+                          padding: "12px 16px",
+                          border: "none",
+                          background: "white",
+                          cursor: "pointer",
+                          fontSize: "0.98rem",
+                        }}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                )}
             </div>
 
             <button
@@ -753,7 +844,7 @@ function PlatformPage() {
                 cursor: "pointer",
               }}
             >
-              Réinitialiser
+              {t.reset}
             </button>
           </div>
 
@@ -764,7 +855,7 @@ function PlatformPage() {
               color: "#d1fae5",
             }}
           >
-            {filteredMosques.length} résultat(s) trouvé(s)
+            {filteredMosques.length} {t.resultsSuffix}
           </p>
         </div>
 
@@ -779,12 +870,10 @@ function PlatformPage() {
             backdropFilter: "blur(10px)",
           }}
         >
-          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
-            Carte interactive des mosquées
-          </h2>
+          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>{t.mapTitle}</h2>
 
           <p style={{ color: "#d1fae5", marginTop: 0, marginBottom: "18px" }}>
-            Cliquez sur un marqueur pour accéder à la page dédiée de la mosquée.
+            {t.mapSubtitle}
           </p>
 
           <div
@@ -827,7 +916,7 @@ function PlatformPage() {
                           textDecoration: "none",
                         }}
                       >
-                        Ouvrir la page
+                        {t.openPage}
                       </a>
                     </div>
                   </Popup>
@@ -889,7 +978,7 @@ function PlatformPage() {
                   fontWeight: 700,
                 }}
               >
-                Ouvrir la page
+                {t.openPage}
               </div>
             </a>
           ))}
@@ -905,10 +994,8 @@ function PlatformPage() {
               padding: "24px",
             }}
           >
-            <h3 style={{ marginTop: 0 }}>Aucun résultat</h3>
-            <p style={{ marginBottom: 0 }}>
-              Aucune mosquée ne correspond à cette recherche pour le moment.
-            </p>
+            <h3 style={{ marginTop: 0 }}>{t.noResultTitle}</h3>
+            <p style={{ marginBottom: 0 }}>{t.noResultText}</p>
           </div>
         )}
       </div>
