@@ -161,16 +161,7 @@ function SahabaPage() {
               Masjid Live
             </p>
 
-            <h1
-              style={{
-                fontSize: "clamp(2.2rem, 5vw, 4rem)",
-                lineHeight: 1.1,
-                margin: "0 0 18px",
-              }}
-            >
-              Écoutez la{" "}
-              <span style={{ color: "#facc15" }}>mosquée Sahaba</span> en direct
-            </h1>
+            <h1>{t.heroTitle}</h1>
 
             <p
               style={{
@@ -513,10 +504,41 @@ function SahabaPage() {
     </div>
   );
 }
-
+const translations = {
+  fr: {
+    heroTitle: "Trouvez une mosquée en direct",
+    heroSubtitle:
+      "Recherchez une mosquée par ville ou par nom, puis accédez directement à sa radio en direct.",
+    searchLabel: "Rechercher par ville ou par nom de mosquée",
+    reset: "Réinitialiser",
+    openPage: "Ouvrir la page",
+    results: "résultat(s) trouvé(s)",
+  },
+  en: {
+    heroTitle: "Find a mosque live",
+    heroSubtitle:
+      "Search for a mosque by city or name, then access its live radio directly.",
+    searchLabel: "Search by city or mosque name",
+    reset: "Reset",
+    openPage: "Open page",
+    results: "result(s) found",
+  },
+  ar: {
+    heroTitle: "اعثر على مسجد مباشر",
+    heroSubtitle:
+      "ابحث عن مسجد حسب المدينة أو الاسم ثم ادخل مباشرة إلى البث الإذاعي المباشر.",
+    searchLabel: "ابحث حسب المدينة أو اسم المسجد",
+    reset: "إعادة التعيين",
+    openPage: "افتح الصفحة",
+    results: "نتيجة",
+  },
+};
 
 
 function PlatformPage() {
+  const [language, setLanguage] = useState("fr");
+  const t = translations[language];
+  
   const [searchCity, setSearchCity] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -610,15 +632,7 @@ function PlatformPage() {
             Masjid Live
           </p>
 
-          <h1
-            style={{
-              fontSize: "clamp(2.2rem, 5vw, 4rem)",
-              lineHeight: 1.1,
-              margin: "0 0 18px",
-            }}
-          >
-            Trouvez une <span style={{ color: "#facc15" }}>mosquée en direct</span>
-          </h1>
+          <h1>{t.heroTitle}</h1>
 
           <p
             style={{
@@ -644,9 +658,7 @@ function PlatformPage() {
             backdropFilter: "blur(10px)",
           }}
         >
-          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
-            Rechercher par ville ou par nom de mosquée
-          </h2>
+          <h2>{t.searchLabel}</h2>
 
           <div
             style={{
@@ -718,6 +730,7 @@ function PlatformPage() {
                       }}
                     >
                       {suggestion}
+                      {t.reset}
                     </button>
                   ))}
                 </div>
