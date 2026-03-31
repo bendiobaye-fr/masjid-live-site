@@ -114,6 +114,7 @@ const translations = {
     noResultText: "لا يوجد مسجد يطابق هذا البحث حالياً.",
   },
 };
+
 const sahabaTranslations = {
   fr: {
     badge: "Radio en direct de la mosquée Sahaba",
@@ -241,11 +242,42 @@ const sahabaTranslations = {
     remindersText: "استمع إلى الدروس والتذكير الروحي من المسجد.",
   },
 };
+
 function normalizeText(text) {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function LanguageSelector({ language, setLanguage }) {
+  const buttonStyle = (lang) => ({
+    background: language === lang ? "#dc2626" : "rgba(255,255,255,0.08)",
+    color: "white",
+    border: "1px solid rgba(255,255,255,0.25)",
+    padding: "10px 14px",
+    borderRadius: "14px",
+    fontWeight: 700,
+    cursor: "pointer",
+  });
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: "10px",
+        marginTop: "20px",
+        flexWrap: "wrap",
+      }}
+    >
+      <button type="button" onClick={() => setLanguage("fr")} style={buttonStyle("fr")}>
+        FR
+      </button>
+      <button type="button" onClick={() => setLanguage("en")} style={buttonStyle("en")}>
+        EN
+      </button>
+      <button type="button" onClick={() => setLanguage("ar")} style={buttonStyle("ar")}>
+        AR
+      </button>
+    </div>
+  );
 }
 
 export default function App() {
@@ -264,6 +296,7 @@ function SahabaPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [status, setStatus] = useState("");
   const [language, setLanguage] = useState("fr");
+
   const t = sahabaTranslations[language];
   const isArabic = language === "ar";
 
@@ -276,7 +309,7 @@ function SahabaPage() {
 
     try {
       if (audio.paused) {
-        setStatus("Connexion au direct...");
+        setStatus(t.liveStatusConnecting);
         await audio.play();
         setIsPlaying(true);
         setStatus(t.liveStatusPlaying);
@@ -287,14 +320,13 @@ function SahabaPage() {
       }
     } catch (err) {
       console.error(err);
-      setStatus("Impossible de lancer le live.");
+      setStatus(t.liveStatusError);
     }
   };
 
   return (
     <div
-     dir={isArabic ? "rtl" : "ltr"}
-
+      dir={isArabic ? "rtl" : "ltr"}
       style={{
         minHeight: "100vh",
         margin: 0,
@@ -338,8 +370,9 @@ function SahabaPage() {
             }}
           />
           {t.badge}
-          <LanguageSelector language={language} setLanguage={setLanguage} />
         </div>
+
+        <LanguageSelector language={language} setLanguage={setLanguage} />
 
         <div
           style={{
@@ -360,7 +393,7 @@ function SahabaPage() {
                 marginBottom: "10px",
               }}
             >
-              Masjid Live
+              {t.brand}
             </p>
 
             <h1
@@ -370,8 +403,9 @@ function SahabaPage() {
                 margin: "0 0 18px",
               }}
             >
-              Écoutez la{" "}
-              <span style={{ color: "#facc15" }}>mosquée Sahaba</span> en direct
+              {t.heroTitleBefore}{" "}
+              <span style={{ color: "#facc15" }}>{t.heroTitleHighlight}</span>{" "}
+              {t.heroTitleAfter}
             </h1>
 
             <p
@@ -382,8 +416,7 @@ function SahabaPage() {
                 maxWidth: "620px",
               }}
             >
-              Prières, khutbas et rappels accessibles partout, depuis votre
-              téléphone, votre tablette ou votre ordinateur.
+              {t.heroSubtitle}
             </p>
 
             <div
@@ -412,7 +445,7 @@ function SahabaPage() {
                   justifyContent: "center",
                 }}
               >
-                {isPlaying ? "⏸️ Stop Live" : "🔴 Live Mosquée SAHABA"}
+                {isPlaying ? t.stopButton : t.liveButton}
               </button>
 
               <a
@@ -429,7 +462,7 @@ function SahabaPage() {
                   borderRadius: "18px",
                 }}
               >
-                Voir le programme
+                {t.programButton}
               </a>
             </div>
 
@@ -465,10 +498,10 @@ function SahabaPage() {
             >
               <div>
                 <p style={{ color: "#d1fae5", margin: 0, fontSize: "14px" }}>
-                  En direct maintenant
+                  {t.nowLive}
                 </p>
                 <h2 style={{ margin: "6px 0 0", fontSize: "1.8rem" }}>
-                  Mosquée Sahaba
+                  {t.mosqueName}
                 </h2>
               </div>
 
@@ -494,7 +527,7 @@ function SahabaPage() {
                     display: "inline-block",
                   }}
                 />
-                LIVE
+                {t.liveBadge}
               </div>
             </div>
 
@@ -513,7 +546,7 @@ function SahabaPage() {
                 preload="none"
                 onPlay={() => {
                   setIsPlaying(true);
-                  setStatus("Live en cours.");
+                  setStatus(t.liveStatusPlaying);
                 }}
                 onPause={() => {
                   setIsPlaying(false);
@@ -545,10 +578,10 @@ function SahabaPage() {
                   padding: "16px",
                 }}
               >
-                <p style={{ color: "#d1fae5", margin: "0 0 8px" }}>Contenu</p>
-                <p style={{ margin: 0, fontWeight: 700 }}>
-                  Prières, khutbas, rappels
+                <p style={{ color: "#d1fae5", margin: "0 0 8px" }}>
+                  {t.contentLabel}
                 </p>
+                <p style={{ margin: 0, fontWeight: 700 }}>{t.contentValue}</p>
               </div>
 
               <div
@@ -559,8 +592,10 @@ function SahabaPage() {
                   padding: "16px",
                 }}
               >
-                <p style={{ color: "#d1fae5", margin: "0 0 8px" }}>Accès</p>
-                <p style={{ margin: 0, fontWeight: 700 }}>24h/24 sur le web</p>
+                <p style={{ color: "#d1fae5", margin: "0 0 8px" }}>
+                  {t.accessLabel}
+                </p>
+                <p style={{ margin: 0, fontWeight: 700 }}>{t.accessValue}</p>
               </div>
             </div>
           </div>
@@ -594,11 +629,8 @@ function SahabaPage() {
               }}
             >
               <div style={{ fontSize: "2rem" }}>🕌</div>
-              <h3 style={{ color: "#064e3b" }}>Diffusion spirituelle</h3>
-              <p style={{ lineHeight: 1.7 }}>
-                Un accès simple aux temps forts de la mosquée Sahaba, même à
-                distance.
-              </p>
+              <h3 style={{ color: "#064e3b" }}>{t.spiritualTitle}</h3>
+              <p style={{ lineHeight: 1.7 }}>{t.spiritualText}</p>
             </div>
 
             <div
@@ -610,11 +642,8 @@ function SahabaPage() {
               }}
             >
               <div style={{ fontSize: "2rem" }}>📻</div>
-              <h3 style={{ color: "#92400e" }}>Écoute facile</h3>
-              <p style={{ lineHeight: 1.7 }}>
-                Un lecteur intégré, simple et adapté au mobile comme à
-                l’ordinateur.
-              </p>
+              <h3 style={{ color: "#92400e" }}>{t.listeningTitle}</h3>
+              <p style={{ lineHeight: 1.7 }}>{t.listeningText}</p>
             </div>
 
             <div
@@ -626,10 +655,8 @@ function SahabaPage() {
               }}
             >
               <div style={{ fontSize: "2rem" }}>🌍</div>
-              <h3 style={{ color: "#064e3b" }}>Accessible partout</h3>
-              <p style={{ lineHeight: 1.7 }}>
-                Idéal pour les fidèles, les familles et la diaspora.
-              </p>
+              <h3 style={{ color: "#064e3b" }}>{t.accessibleTitle}</h3>
+              <p style={{ lineHeight: 1.7 }}>{t.accessibleText}</p>
             </div>
           </div>
 
@@ -652,11 +679,9 @@ function SahabaPage() {
                 marginBottom: "10px",
               }}
             >
-              Programme
+              {t.programLabel}
             </p>
-            <h2 style={{ marginTop: 0, fontSize: "2rem" }}>
-              Temps forts de la mosquée Sahaba
-            </h2>
+            <h2 style={{ marginTop: 0, fontSize: "2rem" }}>{t.programTitle}</h2>
 
             <div
               style={{
@@ -674,10 +699,8 @@ function SahabaPage() {
                   padding: "20px",
                 }}
               >
-                <h3>Prières quotidiennes</h3>
-                <p style={{ lineHeight: 1.7 }}>
-                  Diffusion des temps de recueillement et annonces importantes.
-                </p>
+                <h3>{t.dailyPrayerTitle}</h3>
+                <p style={{ lineHeight: 1.7 }}>{t.dailyPrayerText}</p>
               </div>
 
               <div
@@ -688,10 +711,8 @@ function SahabaPage() {
                   padding: "20px",
                 }}
               >
-                <h3>Khutba du vendredi</h3>
-                <p style={{ lineHeight: 1.7 }}>
-                  Suivez le sermon en direct depuis le bouton Live.
-                </p>
+                <h3>{t.khutbaTitle}</h3>
+                <p style={{ lineHeight: 1.7 }}>{t.khutbaText}</p>
               </div>
 
               <div
@@ -702,61 +723,13 @@ function SahabaPage() {
                   padding: "20px",
                 }}
               >
-                <h3>Rappels et cours</h3>
-                <p style={{ lineHeight: 1.7 }}>
-                  Écoutez les interventions et les rappels spirituels de la
-                  mosquée.
-                </p>
+                <h3>{t.remindersTitle}</h3>
+                <p style={{ lineHeight: 1.7 }}>{t.remindersText}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function LanguageSelector({ language, setLanguage }) {
-  const buttonStyle = (lang) => ({
-    background: language === lang ? "#dc2626" : "rgba(255,255,255,0.08)",
-    color: "white",
-    border: "1px solid rgba(255,255,255,0.25)",
-    padding: "10px 14px",
-    borderRadius: "14px",
-    fontWeight: 700,
-    cursor: "pointer",
-  });
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: "10px",
-        marginTop: "20px",
-        flexWrap: "wrap",
-      }}
-    >
-      <button
-        type="button"
-        onClick={() => setLanguage("fr")}
-        style={buttonStyle("fr")}
-      >
-        FR
-      </button>
-      <button
-        type="button"
-        onClick={() => setLanguage("en")}
-        style={buttonStyle("en")}
-      >
-        EN
-      </button>
-      <button
-        type="button"
-        onClick={() => setLanguage("ar")}
-        style={buttonStyle("ar")}
-      >
-        AR
-      </button>
     </div>
   );
 }
