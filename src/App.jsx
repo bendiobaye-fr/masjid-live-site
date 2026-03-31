@@ -114,7 +114,133 @@ const translations = {
     noResultText: "لا يوجد مسجد يطابق هذا البحث حالياً.",
   },
 };
-
+const sahabaTranslations = {
+  fr: {
+    badge: "Radio en direct de la mosquée Sahaba",
+    brand: "Masjid Live",
+    heroTitleBefore: "Écoutez la",
+    heroTitleHighlight: "mosquée Sahaba",
+    heroTitleAfter: "en direct",
+    heroSubtitle:
+      "Prières, khutbas et rappels accessibles partout, depuis votre téléphone, votre tablette ou votre ordinateur.",
+    liveButton: "🔴 Live Mosquée SAHABA",
+    stopButton: "⏸️ Stop Live",
+    programButton: "Voir le programme",
+    nowLive: "En direct maintenant",
+    mosqueName: "Mosquée Sahaba",
+    liveBadge: "LIVE",
+    liveStatusPlaying: "Live en cours.",
+    liveStatusStopped: "Live arrêté.",
+    liveStatusConnecting: "Connexion au direct...",
+    liveStatusError: "Impossible de lancer le live.",
+    liveStatusPlayerMissing: "Lecteur audio introuvable.",
+    audioError: "Erreur de lecture audio.",
+    contentLabel: "Contenu",
+    contentValue: "Prières, khutbas, rappels",
+    accessLabel: "Accès",
+    accessValue: "24h/24 sur le web",
+    spiritualTitle: "Diffusion spirituelle",
+    spiritualText:
+      "Un accès simple aux temps forts de la mosquée Sahaba, même à distance.",
+    listeningTitle: "Écoute facile",
+    listeningText:
+      "Un lecteur intégré, simple et adapté au mobile comme à l’ordinateur.",
+    accessibleTitle: "Accessible partout",
+    accessibleText: "Idéal pour les fidèles, les familles et la diaspora.",
+    programLabel: "Programme",
+    programTitle: "Temps forts de la mosquée Sahaba",
+    dailyPrayerTitle: "Prières quotidiennes",
+    dailyPrayerText:
+      "Diffusion des temps de recueillement et annonces importantes.",
+    khutbaTitle: "Khutba du vendredi",
+    khutbaText: "Suivez le sermon en direct depuis le bouton Live.",
+    remindersTitle: "Rappels et cours",
+    remindersText:
+      "Écoutez les interventions et les rappels spirituels de la mosquée.",
+  },
+  en: {
+    badge: "Live radio from Sahaba Mosque",
+    brand: "Masjid Live",
+    heroTitleBefore: "Listen to",
+    heroTitleHighlight: "Sahaba Mosque",
+    heroTitleAfter: "live",
+    heroSubtitle:
+      "Prayers, khutbas and reminders accessible everywhere from your phone, tablet or computer.",
+    liveButton: "🔴 Live Sahaba Mosque",
+    stopButton: "⏸️ Stop Live",
+    programButton: "See the schedule",
+    nowLive: "Live now",
+    mosqueName: "Sahaba Mosque",
+    liveBadge: "LIVE",
+    liveStatusPlaying: "Live playing.",
+    liveStatusStopped: "Live stopped.",
+    liveStatusConnecting: "Connecting to live...",
+    liveStatusError: "Unable to start the live stream.",
+    liveStatusPlayerMissing: "Audio player not found.",
+    audioError: "Audio playback error.",
+    contentLabel: "Content",
+    contentValue: "Prayers, khutbas, reminders",
+    accessLabel: "Access",
+    accessValue: "24/7 on the web",
+    spiritualTitle: "Spiritual broadcast",
+    spiritualText:
+      "Easy access to the key moments of Sahaba Mosque, even from afar.",
+    listeningTitle: "Easy listening",
+    listeningText:
+      "An integrated player, simple and adapted to mobile and desktop.",
+    accessibleTitle: "Accessible everywhere",
+    accessibleText: "Ideal for worshippers, families and the diaspora.",
+    programLabel: "Schedule",
+    programTitle: "Highlights of Sahaba Mosque",
+    dailyPrayerTitle: "Daily prayers",
+    dailyPrayerText:
+      "Broadcast of prayer moments and important announcements.",
+    khutbaTitle: "Friday khutba",
+    khutbaText: "Follow the sermon live from the Live button.",
+    remindersTitle: "Reminders and lessons",
+    remindersText:
+      "Listen to talks and spiritual reminders from the mosque.",
+  },
+  ar: {
+    badge: "إذاعة مباشرة من مسجد الصحابة",
+    brand: "مسجد لايف",
+    heroTitleBefore: "استمع إلى",
+    heroTitleHighlight: "مسجد الصحابة",
+    heroTitleAfter: "مباشرة",
+    heroSubtitle:
+      "الصلوات والخطب والتذكير الديني متاحة من أي مكان عبر الهاتف أو الجهاز اللوحي أو الحاسوب.",
+    liveButton: "🔴 البث المباشر مسجد الصحابة",
+    stopButton: "⏸️ إيقاف البث",
+    programButton: "عرض البرنامج",
+    nowLive: "مباشر الآن",
+    mosqueName: "مسجد الصحابة",
+    liveBadge: "مباشر",
+    liveStatusPlaying: "البث يعمل الآن.",
+    liveStatusStopped: "تم إيقاف البث.",
+    liveStatusConnecting: "جارٍ الاتصال بالبث...",
+    liveStatusError: "تعذر تشغيل البث المباشر.",
+    liveStatusPlayerMissing: "تعذر العثور على مشغل الصوت.",
+    audioError: "خطأ في تشغيل الصوت.",
+    contentLabel: "المحتوى",
+    contentValue: "صلوات، خطب، تذكير ديني",
+    accessLabel: "الوصول",
+    accessValue: "على الويب 24/24",
+    spiritualTitle: "بث روحاني",
+    spiritualText: "وصول سهل إلى أبرز لحظات مسجد الصحابة حتى من بعيد.",
+    listeningTitle: "استماع سهل",
+    listeningText: "مشغل مدمج بسيط ومناسب للهاتف والحاسوب.",
+    accessibleTitle: "متاح في كل مكان",
+    accessibleText: "مناسب للمصلين والعائلات والجالية.",
+    programLabel: "البرنامج",
+    programTitle: "أبرز أوقات مسجد الصحابة",
+    dailyPrayerTitle: "الصلوات اليومية",
+    dailyPrayerText: "بث أوقات التعبد والإعلانات المهمة.",
+    khutbaTitle: "خطبة الجمعة",
+    khutbaText: "تابع الخطبة مباشرة عبر زر البث.",
+    remindersTitle: "الدروس والتذكير",
+    remindersText: "استمع إلى الدروس والتذكير الروحي من المسجد.",
+  },
+};
 function normalizeText(text) {
   return text
     .toLowerCase()
@@ -137,11 +263,14 @@ function SahabaPage() {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [status, setStatus] = useState("");
+  const [language, setLanguage] = useState("fr");
+  const t = sahabaTranslations[language];
+  const isArabic = language === "ar";
 
   const toggleAudio = async () => {
     const audio = audioRef.current;
     if (!audio) {
-      setStatus("Lecteur audio introuvable.");
+      setStatus(t.liveStatusPlayerMissing);
       return;
     }
 
@@ -150,11 +279,11 @@ function SahabaPage() {
         setStatus("Connexion au direct...");
         await audio.play();
         setIsPlaying(true);
-        setStatus("Live en cours.");
+        setStatus(t.liveStatusPlaying);
       } else {
         audio.pause();
         setIsPlaying(false);
-        setStatus("Live arrêté.");
+        setStatus(t.liveStatusStopped);
       }
     } catch (err) {
       console.error(err);
@@ -164,6 +293,8 @@ function SahabaPage() {
 
   return (
     <div
+     dir={isArabic ? "rtl" : "ltr"}
+
       style={{
         minHeight: "100vh",
         margin: 0,
@@ -173,6 +304,7 @@ function SahabaPage() {
         fontFamily: "Arial, sans-serif",
         display: "flex",
         flexDirection: "column",
+        textAlign: isArabic ? "right" : "left",
       }}
     >
       <div
@@ -205,7 +337,8 @@ function SahabaPage() {
               display: "inline-block",
             }}
           />
-          Radio en direct de la mosquée Sahaba
+          {t.badge}
+          <LanguageSelector language={language} setLanguage={setLanguage} />
         </div>
 
         <div
@@ -384,11 +517,11 @@ function SahabaPage() {
                 }}
                 onPause={() => {
                   setIsPlaying(false);
-                  setStatus("Live arrêté.");
+                  setStatus(t.liveStatusStopped);
                 }}
                 onError={() => {
                   setIsPlaying(false);
-                  setStatus("Erreur de lecture audio.");
+                  setStatus(t.audioError);
                 }}
                 style={{ width: "100%" }}
               >
