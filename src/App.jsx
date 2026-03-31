@@ -16,7 +16,11 @@ const MOSQUES = [
     name: "Mosquée Sahaba",
     city: "Créteil",
     url: "https://sahaba.masdjidlive.com",
-    description: "Prières, khutbas et rappels en direct.",
+    description: {
+      fr: "Prières, khutbas et rappels en direct.",
+      en: "Prayers, khutbas and reminders live.",
+      ar: "الصلوات والخطب والتذكير الديني مباشرة.",
+    },
     lat: 48.7904,
     lng: 2.4556,
   },
@@ -24,7 +28,11 @@ const MOSQUES = [
     name: "Mosquée Touba",
     city: "Paris",
     url: "https://touba.masdjidlive.com",
-    description: "Station à venir.",
+    description: {
+      fr: "Station à venir.",
+      en: "Station coming soon.",
+      ar: "المحطة قريباً.",
+    },
     lat: 48.8566,
     lng: 2.3522,
   },
@@ -32,7 +40,11 @@ const MOSQUES = [
     name: "Mosquée Médina",
     city: "Lyon",
     url: "https://medina.masdjidlive.com",
-    description: "Station à venir.",
+    description: {
+      fr: "Station à venir.",
+      en: "Station coming soon.",
+      ar: "المحطة قريباً.",
+    },
     lat: 45.764,
     lng: 4.8357,
   },
@@ -40,7 +52,11 @@ const MOSQUES = [
     name: "Mosquée Ali Hacene-Blidi",
     city: "Marseille",
     url: "https://alihaceneblidi.masdjidlive.com",
-    description: "Station à venir.",
+    description: {
+      fr: "Station à venir.",
+      en: "Station coming soon.",
+      ar: "المحطة قريباً.",
+    },
     lat: 43.2965,
     lng: 5.3698,
   },
@@ -905,7 +921,7 @@ function PlatformPage() {
                       <br />
                       {mosque.city}
                       <br />
-                      <span>{mosque.description}</span>
+                      <span>{mosque.description[language]}</span>
                       <br />
                       <br />
                       <a
@@ -963,7 +979,7 @@ function PlatformPage() {
 
               <h2 style={{ marginTop: 0 }}>{mosque.name}</h2>
 
-              <p style={{ lineHeight: 1.7 }}>{mosque.description}</p>
+              <p style={{ lineHeight: 1.7 }}>{mosque.description[language]}</p>
 
               <div
                 style={{
