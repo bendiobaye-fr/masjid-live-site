@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from "react";
+import RadioPlayer from "./RadioPlayer";
+import { useMemo, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import L from "leaflet";
 
@@ -124,18 +125,10 @@ const sahabaTranslations = {
     heroTitleAfter: "en direct",
     heroSubtitle:
       "Prières, khutbas et rappels accessibles partout, depuis votre téléphone, votre tablette ou votre ordinateur.",
-    liveButton: "🔴 Live Mosquée SAHABA",
-    stopButton: "⏸️ Stop Live",
     programButton: "Voir le programme",
     nowLive: "En direct maintenant",
     mosqueName: "Mosquée Sahaba",
     liveBadge: "LIVE",
-    liveStatusPlaying: "Live en cours.",
-    liveStatusStopped: "Live arrêté.",
-    liveStatusConnecting: "Connexion au direct...",
-    liveStatusError: "Impossible de lancer le live.",
-    liveStatusPlayerMissing: "Lecteur audio introuvable.",
-    audioError: "Erreur de lecture audio.",
     contentLabel: "Contenu",
     contentValue: "Prières, khutbas, rappels",
     accessLabel: "Accès",
@@ -154,7 +147,7 @@ const sahabaTranslations = {
     dailyPrayerText:
       "Diffusion des temps de recueillement et annonces importantes.",
     khutbaTitle: "Khutba du vendredi",
-    khutbaText: "Suivez le sermon en direct depuis le bouton Live.",
+    khutbaText: "Suivez le sermon en direct depuis le lecteur ci-dessus.",
     remindersTitle: "Rappels et cours",
     remindersText:
       "Écoutez les interventions et les rappels spirituels de la mosquée.",
@@ -167,18 +160,10 @@ const sahabaTranslations = {
     heroTitleAfter: "live",
     heroSubtitle:
       "Prayers, khutbas and reminders accessible everywhere from your phone, tablet or computer.",
-    liveButton: "🔴 Live Sahaba Mosque",
-    stopButton: "⏸️ Stop Live",
     programButton: "See the schedule",
     nowLive: "Live now",
     mosqueName: "Sahaba Mosque",
     liveBadge: "LIVE",
-    liveStatusPlaying: "Live playing.",
-    liveStatusStopped: "Live stopped.",
-    liveStatusConnecting: "Connecting to live...",
-    liveStatusError: "Unable to start the live stream.",
-    liveStatusPlayerMissing: "Audio player not found.",
-    audioError: "Audio playback error.",
     contentLabel: "Content",
     contentValue: "Prayers, khutbas, reminders",
     accessLabel: "Access",
@@ -197,7 +182,7 @@ const sahabaTranslations = {
     dailyPrayerText:
       "Broadcast of prayer moments and important announcements.",
     khutbaTitle: "Friday khutba",
-    khutbaText: "Follow the sermon live from the Live button.",
+    khutbaText: "Follow the sermon live from the player above.",
     remindersTitle: "Reminders and lessons",
     remindersText:
       "Listen to talks and spiritual reminders from the mosque.",
@@ -210,18 +195,10 @@ const sahabaTranslations = {
     heroTitleAfter: "مباشرة",
     heroSubtitle:
       "الصلوات والخطب والتذكير الديني متاحة من أي مكان عبر الهاتف أو الجهاز اللوحي أو الحاسوب.",
-    liveButton: "🔴 البث المباشر مسجد الصحابة",
-    stopButton: "⏸️ إيقاف البث",
     programButton: "عرض البرنامج",
     nowLive: "مباشر الآن",
     mosqueName: "مسجد الصحابة",
     liveBadge: "مباشر",
-    liveStatusPlaying: "البث يعمل الآن.",
-    liveStatusStopped: "تم إيقاف البث.",
-    liveStatusConnecting: "جارٍ الاتصال بالبث...",
-    liveStatusError: "تعذر تشغيل البث المباشر.",
-    liveStatusPlayerMissing: "تعذر العثور على مشغل الصوت.",
-    audioError: "خطأ في تشغيل الصوت.",
     contentLabel: "المحتوى",
     contentValue: "صلوات، خطب، تذكير ديني",
     accessLabel: "الوصول",
@@ -237,7 +214,7 @@ const sahabaTranslations = {
     dailyPrayerTitle: "الصلوات اليومية",
     dailyPrayerText: "بث أوقات التعبد والإعلانات المهمة.",
     khutbaTitle: "خطبة الجمعة",
-    khutbaText: "تابع الخطبة مباشرة عبر زر البث.",
+    khutbaText: "تابع الخطبة مباشرة عبر المشغل أعلاه.",
     remindersTitle: "الدروس والتذكير",
     remindersText: "استمع إلى الدروس والتذكير الروحي من المسجد.",
   },
@@ -267,13 +244,25 @@ function LanguageSelector({ language, setLanguage }) {
         flexWrap: "wrap",
       }}
     >
-      <button type="button" onClick={() => setLanguage("fr")} style={buttonStyle("fr")}>
+      <button
+        type="button"
+        onClick={() => setLanguage("fr")}
+        style={buttonStyle("fr")}
+      >
         FR
       </button>
-      <button type="button" onClick={() => setLanguage("en")} style={buttonStyle("en")}>
+      <button
+        type="button"
+        onClick={() => setLanguage("en")}
+        style={buttonStyle("en")}
+      >
         EN
       </button>
-      <button type="button" onClick={() => setLanguage("ar")} style={buttonStyle("ar")}>
+      <button
+        type="button"
+        onClick={() => setLanguage("ar")}
+        style={buttonStyle("ar")}
+      >
         AR
       </button>
     </div>
@@ -281,7 +270,7 @@ function LanguageSelector({ language, setLanguage }) {
 }
 
 export default function App() {
-  const hostname = window.location.hostname;
+  const hostname = window.location.hostname.toLowerCase();
 
   if (hostname.includes("sahaba")) {
     return <SahabaPage />;
@@ -291,38 +280,10 @@ export default function App() {
 }
 
 function SahabaPage() {
-  const audioUrl = "https://radio.masdjidlive.com/listen/sahaba/radio.mp3";
-  const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [status, setStatus] = useState("");
   const [language, setLanguage] = useState("fr");
 
   const t = sahabaTranslations[language];
   const isArabic = language === "ar";
-
-  const toggleAudio = async () => {
-    const audio = audioRef.current;
-    if (!audio) {
-      setStatus(t.liveStatusPlayerMissing);
-      return;
-    }
-
-    try {
-      if (audio.paused) {
-        setStatus(t.liveStatusConnecting);
-        await audio.play();
-        setIsPlaying(true);
-        setStatus(t.liveStatusPlaying);
-      } else {
-        audio.pause();
-        setIsPlaying(false);
-        setStatus(t.liveStatusStopped);
-      }
-    } catch (err) {
-      console.error(err);
-      setStatus(t.liveStatusError);
-    }
-  };
 
   return (
     <div
@@ -427,27 +388,6 @@ function SahabaPage() {
                 marginTop: "28px",
               }}
             >
-              <button
-                onClick={toggleAudio}
-                type="button"
-                style={{
-                  background: "#dc2626",
-                  color: "white",
-                  border: "none",
-                  padding: "16px 24px",
-                  borderRadius: "18px",
-                  fontSize: "1rem",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  boxShadow: "0 10px 30px rgba(127,29,29,0.35)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {isPlaying ? t.stopButton : t.liveButton}
-              </button>
-
               <a
                 href="#programme"
                 style={{
@@ -465,16 +405,6 @@ function SahabaPage() {
                 {t.programButton}
               </a>
             </div>
-
-            <p
-              style={{
-                marginTop: "14px",
-                color: "#d1fae5",
-                minHeight: "24px",
-              }}
-            >
-              {status}
-            </p>
           </div>
 
           <div
@@ -540,26 +470,7 @@ function SahabaPage() {
                 padding: "16px",
               }}
             >
-              <audio
-                ref={audioRef}
-                controls
-                preload="none"
-                onPlay={() => {
-                  setIsPlaying(true);
-                  setStatus(t.liveStatusPlaying);
-                }}
-                onPause={() => {
-                  setIsPlaying(false);
-                  setStatus(t.liveStatusStopped);
-                }}
-                onError={() => {
-                  setIsPlaying(false);
-                  setStatus(t.audioError);
-                }}
-                style={{ width: "100%" }}
-              >
-                <source src={audioUrl} type="audio/mpeg" />
-              </audio>
+              <RadioPlayer />
             </div>
 
             <div
@@ -681,7 +592,10 @@ function SahabaPage() {
             >
               {t.programLabel}
             </p>
-            <h2 style={{ marginTop: 0, fontSize: "2rem" }}>{t.programTitle}</h2>
+
+            <h2 style={{ marginTop: 0, fontSize: "2rem" }}>
+              {t.programTitle}
+            </h2>
 
             <div
               style={{
@@ -767,9 +681,7 @@ function PlatformPage() {
 
     if (!query) return uniqueValues;
 
-    return uniqueValues.filter((value) =>
-      normalizeText(value).includes(query)
-    );
+    return uniqueValues.filter((value) => normalizeText(value).includes(query));
   }, [searchCity]);
 
   return (
