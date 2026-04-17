@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const OVENPLAYER_CDN = "https://cdn.jsdelivr.net/npm/ovenplayer/dist/ovenplayer.js";
+const OVENPLAYER_JS = "https://cdn.jsdelivr.net/npm/ovenplayer/dist/ovenplayer.js";
+const OVENPLAYER_CSS = "https://cdn.jsdelivr.net/npm/ovenplayer/dist/ovenplayer.css";
 const OME_HOST = "stream.masdjidlive.com";
 
 function getWebRtcUrl(streamName) {
@@ -10,14 +11,21 @@ function getWebRtcUrl(streamName) {
   return `${protocol}://${OME_HOST}:${port}/app/${streamName}`;
 }
 
-function loadOvenPlayerScript() {
+function loadOvenPlayerAssets() {
   return new Promise((resolve, reject) => {
+    if (!document.querySelector(`link[href="${OVENPLAYER_CSS}"]`)) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = OVENPLAYER_CSS;
+      document.head.appendChild(link);
+    }
+
     if (window.OvenPlayer) {
       resolve(window.OvenPlayer);
       return;
     }
 
-    const existing = document.querySelector(`script[src="${OVENPLAYER_CDN}"]`);
+    const existing = document.querySelector(`script[src="${OVENPLAYER_JS}"]`);
     if (existing) {
       existing.addEventListener("load", () => resolve(window.OvenPlayer));
       existing.addEventListener("error", reject);
@@ -25,7 +33,7 @@ function loadOvenPlayerScript() {
     }
 
     const script = document.createElement("script");
-    script.src = OVENPLAYER_CDN;
+    script.src = OVENPLAYER_JS;
     script.async = true;
     script.onload = () => resolve(window.OvenPlayer);
     script.onerror = reject;
@@ -37,7 +45,7 @@ export default function RadioPlayer({
   title = "Masjid Live",
   defaultStream = "stream",
 }) {
-  const containerRef = useRef(null);
+  const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
 
   const [selectedStream, setSelectedStream] = useState(defaultStream);
@@ -52,13 +60,13 @@ export default function RadioPlayer({
   useEffect(() => {
     let cancelled = false;
 
-    async function createPlayer() {
+    async function initPlayer() {
       try {
         setError("");
         setStatus("loading");
 
-        const OvenPlayer = await loadOvenPlayerScript();
-        if (cancelled || !containerRef.current) return;
+        const OvenPlayer = await loadOvenPlayerAssets();
+        if (cancelled || !playerContainerRef.current) return;
 
         if (playerRef.current) {
           try {
@@ -67,13 +75,13 @@ export default function RadioPlayer({
           playerRef.current = null;
         }
 
-        containerRef.current.innerHTML = "";
+        playerContainerRef.current.innerHTML = "";
 
-        const player = OvenPlayer.create(containerRef.current, {
+        const player = OvenPlayer.create(playerContainerRef.current, {
           autoStart: true,
           autoFallback: true,
+          mute: true,
           controls: true,
-          mute: false,
           showBigPlayButton: true,
           expandFullScreenUI: true,
           iOSFakeFullScreen: true,
@@ -95,16 +103,17 @@ export default function RadioPlayer({
           });
 
           player.on("stateChanged", (data) => {
-            if (cancelled) return;
-            const nextState = data?.newstate || data?.state || "ready";
-            setStatus(String(nextState));
+            if (!cancelled) {
+              setStatus(data?.newstate || data?.state || "playing");
+            }
           });
 
           player.on("error", (data) => {
-            if (cancelled) return;
             console.error("OvenPlayer error:", data);
-            setStatus("error");
-            setError("Lecture impossible pour ce flux.");
+            if (!cancelled) {
+              setStatus("error");
+              setError("Le player n'arrive pas à afficher ce flux.");
+            }
           });
         }
       } catch (err) {
@@ -116,12 +125,12 @@ export default function RadioPlayer({
       }
     }
 
-    createPlayer();
+    initPlayer();
 
     return () => {
       cancelled = true;
     };
-  }, [signalingUrl, selectedStream, title]);
+  }, [selectedStream, signalingUrl, title]);
 
   useEffect(() => {
     return () => {
@@ -147,24 +156,24 @@ export default function RadioPlayer({
       <div
         style={{
           display: "flex",
-          gap: 10,
+          gap: 12,
           flexWrap: "wrap",
-          alignItems: "center",
           justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: 12,
         }}
       >
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 12 }}>
           <button
             onClick={() => setSelectedStream("stream")}
             style={{
-              padding: "10px 14px",
-              borderRadius: 10,
-              border: "1px solid #ccc",
+              padding: "12px 18px",
+              borderRadius: 14,
+              border: "1px solid rgba(255,255,255,0.35)",
+              background: selectedStream === "stream" ? "#f3f3f3" : "#111",
+              color: selectedStream === "stream" ? "#111" : "#fff",
               cursor: "pointer",
-              background:
-                selectedStream === "stream" ? "#111" : "#fff",
-              color: selectedStream === "stream" ? "#fff" : "#111",
+              fontWeight: 700,
             }}
           >
             🎥 Studio
@@ -173,57 +182,59 @@ export default function RadioPlayer({
           <button
             onClick={() => setSelectedStream("mobile")}
             style={{
-              padding: "10px 14px",
-              borderRadius: 10,
-              border: "1px solid #ccc",
-              cursor: "pointer",
-              background:
-                selectedStream === "mobile" ? "#111" : "#fff",
+              padding: "12px 18px",
+              borderRadius: 14,
+              border: "1px solid rgba(255,255,255,0.35)",
+              background: selectedStream === "mobile" ? "#111" : "#f3f3f3",
               color: selectedStream === "mobile" ? "#fff" : "#111",
+              cursor: "pointer",
+              fontWeight: 700,
             }}
           >
             📱 Mobile
           </button>
         </div>
 
-        <div
-          style={{
-            fontSize: 13,
-            opacity: 0.75,
-            wordBreak: "break-all",
-            textAlign: "right",
-          }}
-        >
+        <div style={{ fontSize: 14, opacity: 0.9 }}>
           Flux actif : <strong>{selectedStream}</strong>
         </div>
       </div>
 
       <div
-        ref={containerRef}
-        id="ome-player"
         style={{
           width: "100%",
-          aspectRatio: "16 / 9",
+          minHeight: 360,
           background: "#000",
-          borderRadius: 14,
+          borderRadius: 18,
           overflow: "hidden",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
         }}
-      />
+      >
+        <div
+          ref={playerContainerRef}
+          id="ome-player"
+          style={{
+            width: "100%",
+            height: "360px",
+            background: "#000",
+          }}
+        />
+      </div>
 
-      <div style={{ marginTop: 10, fontSize: 13, opacity: 0.8 }}>
+      <div style={{ marginTop: 14, fontSize: 14 }}>
         Statut : <strong>{status}</strong>
       </div>
 
-      <div style={{ marginTop: 6, fontSize: 12, opacity: 0.7 }}>
+      <div style={{ marginTop: 8, fontSize: 13, opacity: 0.8, wordBreak: "break-all" }}>
         URL WebRTC : {signalingUrl}
       </div>
 
       {error ? (
         <div
           style={{
-            marginTop: 10,
-            padding: 10,
-            borderRadius: 10,
+            marginTop: 12,
+            padding: 12,
+            borderRadius: 12,
             background: "#fff3f3",
             color: "#a10000",
             fontSize: 14,
