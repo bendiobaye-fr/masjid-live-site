@@ -2,13 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 const OVENPLAYER_JS = "https://cdn.jsdelivr.net/npm/ovenplayer/dist/ovenplayer.js";
 const OVENPLAYER_CSS = "https://cdn.jsdelivr.net/npm/ovenplayer/dist/ovenplayer.css";
-const OME_HOST = "stream.masdjidlive.com";
+const OME_HOST = "217.160.172.184";
 
 function getWebRtcUrl(streamName) {
-  const isHttps = window.location.protocol === "https:";
-  const protocol = isHttps ? "wss" : "ws";
-  const port = isHttps ? "3334" : "3333";
-  return `${protocol}://${OME_HOST}:${port}/app/${streamName}`;
+  return `ws://${OME_HOST}:3333/app/${streamName}`;
 }
 
 function loadOvenPlayerAssets() {
@@ -80,7 +77,7 @@ export default function RadioPlayer({
         const player = OvenPlayer.create(playerContainerRef.current, {
           autoStart: true,
           autoFallback: true,
-          mute: true,
+          mute: false,
           controls: true,
           showBigPlayButton: true,
           expandFullScreenUI: true,
